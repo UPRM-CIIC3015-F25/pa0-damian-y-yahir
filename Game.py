@@ -20,11 +20,31 @@ def ball_movement():
 
     # Ball collision with the player paddle
     if ball.colliderect(player):
-        if abs(ball.bottom - player.top) < 10:  # Check if ball hits the top of the paddle
+        if ball_speed_y > 0 and ball.bottom <= player.top + 10:  # My way to check if ball hits the top of the paddle
             # TODO Task 2: Fix score to increase by 1
             # I just added "+" to the score counter
             score += 1  # Increase player score
             ball_speed_y *= -1  # Reverse ball's vertical direction
+
+            # Increases ball's speed for difficulty after bounce
+            # I made the difficulty increase slowly to avoid exponential curve
+            # rather than outride capping it too quick
+            if ball_speed_x > 0 and ball_speed_y > 0:
+                ball_speed_x += score * 0.125 * (1)
+                ball_speed_y += score * 0.025 * (1)
+                start = True
+            else:
+                ball_speed_y += score * 0.25 * (-1)
+                ball_speed_x += score * 0.25 * (-1)
+
+            #set maximum speed to avoid tunneling
+            max_ballspeed_x = 10
+            max_ballspeed_y = 10
+            ball_speed_x = max(-max_ballspeed_x, min(ball_speed_x, max_ballspeed_x))
+            ball_speed_y = max(-max_ballspeed_y, min(ball_speed_y, max_ballspeed_y))
+
+            # Reposition the ball above the paddle to prevent re-collision or tunneling
+            ball.bottom = player.top
             # TODO Task 6: Add sound effects HERE
 
     # Ball collision with top boundary
@@ -33,6 +53,7 @@ def ball_movement():
 
     # Ball collision with left and right boundaries
     if ball.left <= 0 or ball.right >= screen_width:
+        ball.left == 0 or ball.right == screen_width
         ball_speed_x *= -1
 
     # Ball goes below the bottom boundary (missed by player)
@@ -120,12 +141,13 @@ while True:
 
     # Visuals
     light_grey = pygame.Color('grey83')
+    light_blue = pygame.Color('blue')
     red = pygame.Color('red')
     screen.fill(bg_color)  # Clear screen with background color
     pygame.draw.rect(screen, light_grey, player)  # Draw player paddle
     # TODO Task 3: Change the Ball Color
     pygame.draw.ellipse(screen, red, ball)  # Draw ball
-    player_text = basic_font.render(f'{score}', False, light_grey)  # Render player score
+    player_text = basic_font.render(f'{score}', False, light_blue)  # Render player score
     screen.blit(player_text, (screen_width/2 - 15, 10))  # Display score on screen
 
     # Update display
