@@ -8,7 +8,7 @@ def ball_movement():
     """
     Handles the movement of the ball and collision detection with the player and screen boundaries.
     """
-    global ball_speed_x, ball_speed_y, score, start, ball_color
+    global ball_speed_x, ball_speed_y, score, start, ball_color, player_width, player
 
     # Move the ball
     ball.x += ball_speed_x
@@ -53,6 +53,13 @@ def ball_movement():
             ball_speed_x = max(-max_ballspeed_x, min(ball_speed_x, max_ballspeed_x))
             ball_speed_y = max(-max_ballspeed_y, min(ball_speed_y, max_ballspeed_y))
 
+            #This is to decrease player width for difficulty
+            if player_width > ball.width:
+                player_width -= score
+                # Recreate player Rect with new width, centered at current x
+                player_center_x = player.centerx
+                player = pygame.Rect(player_center_x - player_width // 2, screen_height - 20, player_width, player_height)
+
             # Reposition the ball above the paddle to prevent re-collision or tunneling
             ball.bottom = player.top
             # TODO Task 6: Add sound effects HERE
@@ -86,10 +93,14 @@ def restart():
     """
     Resets the ball and player scores to the initial state.
     """
-    global ball_speed_x, ball_speed_y, score
+    global ball_speed_x, ball_speed_y, score, player_width, player
     ball.center = (screen_width / 2, screen_height / 2)  # Reset ball position to center
     ball_speed_y, ball_speed_x = 0, 0  # Stop ball movement
     score = 0  # Reset player score
+
+    #Make player width reset upon restart
+    player_width = 300
+    player = pygame.Rect(screen_width / 2 - 45, screen_height - 20, player_width, player_height)
 
 # General setup
 pygame.mixer.pre_init(44100, -16, 1, 1024)
@@ -112,8 +123,7 @@ ball = pygame.Rect(screen_width / 2 - 15, screen_height / 2 - 15, 30, 30)  # Bal
 player_height = 15
 player_width = 300
 player = pygame.Rect(screen_width/2 - 45, screen_height - 20, player_width, player_height)  # Player paddle
-if ball.colliderect(player):
-    player_width -= 10
+
 
 # Game Variables
 ball_speed_x = 0
@@ -137,6 +147,8 @@ while True:
             pygame.quit()
             sys.exit()
         elif event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_ESCAPE: #Allows manual quit game
+                pygame.quit()
             if event.key == pygame.K_LEFT:
                 player_speed -= 6  # Move paddle left
             if event.key == pygame.K_RIGHT:
