@@ -1,10 +1,14 @@
 import pygame, sys, random
 
+# This is to initialize a beginig  color first to
+# the ball can have a color in the first place
+# as it needs to be defined outside ball_movement
+ball_color = pygame.Color('red')
 def ball_movement():
     """
     Handles the movement of the ball and collision detection with the player and screen boundaries.
     """
-    global ball_speed_x, ball_speed_y, score, start
+    global ball_speed_x, ball_speed_y, score, start, ball_color
 
     # Move the ball
     ball.x += ball_speed_x
@@ -12,16 +16,22 @@ def ball_movement():
 
     # Start the ball movement when the game begins
     # TODO Task 5 Create a Merge Conflict
-    speed = 7
+    speed = 6
     if start:
         ball_speed_x = speed * random.choice((1, -1))  # Randomize initial horizontal direction
         ball_speed_y = speed * random.choice((1, -1))  # Randomize initial vertical direction
         start = False
 
-    # Ball collision with the player paddle
+     #Ball collision with the player paddle
     if ball.colliderect(player):
-        if ball_speed_y > 0 and ball.bottom <= player.top + 10:  # My way to check if ball hits the top of the paddle
+         #Pick a random color for the ball
+        ball_color = random.choice([pygame.Color('red'), pygame.Color('green'), pygame.Color('blue'), \
+                      pygame.Color('yellow'), pygame.Color('purple')])
+
+        # My way to check if ball hits the top of the paddle
+        if ball_speed_y > 0 and ball.bottom <= player.top + 10:
             # TODO Task 2: Fix score to increase by 1
+            #I'm leaving this to tell myself this is done
             # I just added "+" to the score counter
             score += 1  # Increase player score
             ball_speed_y *= -1  # Reverse ball's vertical direction
@@ -98,9 +108,12 @@ bg_color = pygame.Color('grey12')
 # Game Rectangles (ball and player paddle)
 ball = pygame.Rect(screen_width / 2 - 15, screen_height / 2 - 15, 30, 30)  # Ball (centered)
 # TODO Task 1 Make the paddle bigger
+#I'm leaving this to tell myself this is done
 player_height = 15
-player_width = 200
+player_width = 300
 player = pygame.Rect(screen_width/2 - 45, screen_height - 20, player_width, player_height)  # Player paddle
+if ball.colliderect(player):
+    player_width -= 10
 
 # Game Variables
 ball_speed_x = 0
@@ -117,18 +130,22 @@ start = False  # Indicates if the game has started
 while True:
     # Event handling
     # TODO Task 4: Add your name
+    # I'm leaving this to tell myself this is done
     name = "Damian Jose"
     for event in pygame.event.get():
         if event.type == pygame.QUIT:  # Quit the game
             pygame.quit()
             sys.exit()
-        if event.type == pygame.KEYDOWN:
+        elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_LEFT:
                 player_speed -= 6  # Move paddle left
             if event.key == pygame.K_RIGHT:
                 player_speed += 6  # Move paddle right
+            # Alterred it so the key does affect the ball AFTER start is True
             if event.key == pygame.K_SPACE:
                 start = True  # Start the ball movement
+
+
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_LEFT:
                 player_speed += 6  # Stop moving left
@@ -145,8 +162,10 @@ while True:
     red = pygame.Color('red')
     screen.fill(bg_color)  # Clear screen with background color
     pygame.draw.rect(screen, light_grey, player)  # Draw player paddle
+
     # TODO Task 3: Change the Ball Color
-    pygame.draw.ellipse(screen, red, ball)  # Draw ball
+    # I'm leaving this to tell myself this is done
+    pygame.draw.ellipse(screen, ball_color, ball)  # Draw ball
     player_text = basic_font.render(f'{score}', False, light_blue)  # Render player score
     screen.blit(player_text, (screen_width/2 - 15, 10))  # Display score on screen
 
