@@ -149,6 +149,7 @@ while True:
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE: #Allows manual quit game
                 pygame.quit()
+                sys.exit()
             if event.key == pygame.K_LEFT:
                 player_speed -= 6  # Move paddle left
             if event.key == pygame.K_RIGHT:
