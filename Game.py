@@ -4,6 +4,7 @@ import pygame, sys, random
 # the ball can have a color in the first place
 # as it needs to be defined outside ball_movement
 ball_color = pygame.Color('red')
+
 def ball_movement():
     """
     Handles the movement of the ball and collision detection with the player and screen boundaries.
@@ -56,6 +57,7 @@ def ball_movement():
             #This is to decrease player width for difficulty
             if player_width > ball.width:
                 player_width -= score
+
                 # Recreate player Rect with new width, centered at current x
                 player_center_x = player.centerx
                 player = pygame.Rect(player_center_x - player_width // 2, screen_height - 20, player_width, player_height)
@@ -70,7 +72,7 @@ def ball_movement():
 
     # Ball collision with left and right boundaries
     if ball.left <= 0 or ball.right >= screen_width:
-        ball.left == 0 or ball.right == screen_width
+        ball.left <= 0 or ball.right >= screen_width
         ball_speed_x *= -1
 
     # Ball goes below the bottom boundary (missed by player)
@@ -157,8 +159,6 @@ while True:
             # Alterred it so the key does affect the ball AFTER start is True
             if event.key == pygame.K_SPACE:
                 start = True  # Start the ball movement
-
-
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_LEFT:
                 player_speed += 6  # Stop moving left
