@@ -48,7 +48,7 @@ def ball_movement():
                 ball_speed_y += score * 0.25 * (-1)
                 ball_speed_x += score * 0.25 * (-1)
 
-            #set maximum speed to avoid tunneling
+            #set maximum speed to avoid tunneling and clipping
             max_ballspeed_x = 9
             max_ballspeed_y = 9
             ball_speed_x = max(-max_ballspeed_x, min(ball_speed_x, max_ballspeed_x))
