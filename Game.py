@@ -72,7 +72,6 @@ def ball_movement():
 
     # Ball collision with left and right boundaries
     if ball.left <= 0 or ball.right >= screen_width:
-        ball.left <= 0 or ball.right >= screen_width
         ball_speed_x *= -1
 
     # Ball goes below the bottom boundary (missed by player)
