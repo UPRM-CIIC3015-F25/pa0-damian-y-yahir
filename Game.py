@@ -49,8 +49,8 @@ def ball_movement():
                 ball_speed_x += score * 0.25 * (-1)
 
             #set maximum speed to avoid tunneling
-            max_ballspeed_x = 10
-            max_ballspeed_y = 10
+            max_ballspeed_x = 9
+            max_ballspeed_y = 9
             ball_speed_x = max(-max_ballspeed_x, min(ball_speed_x, max_ballspeed_x))
             ball_speed_y = max(-max_ballspeed_y, min(ball_speed_y, max_ballspeed_y))
 
@@ -95,7 +95,7 @@ def restart():
     Resets the ball and player scores to the initial state.
     """
     global ball_speed_x, ball_speed_y, score, player_width, player
-    ball.center = (screen_width / 2, screen_height / 2)  # Reset ball position to center
+    ball.center = (screen_width // 2, screen_height // 2)  # Reset ball position to center
     ball_speed_y, ball_speed_x = 0, 0  # Stop ball movement
     score = 0  # Reset player score
 
@@ -118,12 +118,12 @@ pygame.display.set_caption('Pong')  # Set window title
 bg_color = pygame.Color('grey12')
 
 # Game Rectangles (ball and player paddle)
-ball = pygame.Rect(screen_width / 2 - 15, screen_height / 2 - 15, 30, 30)  # Ball (centered)
+ball = pygame.Rect(screen_width // 2 - 15, screen_height // 2 - 15, 30, 30)  # Ball (centered)
 # TODO Task 1 Make the paddle bigger
 #I'm leaving this to tell myself this is done
 player_height = 15
 player_width = 300
-player = pygame.Rect(screen_width/2 - 45, screen_height - 20, player_width, player_height)  # Player paddle
+player = pygame.Rect(screen_width // 2 - 45, screen_height - 20, player_width, player_height)  # Player paddle
 
 
 # Game Variables
