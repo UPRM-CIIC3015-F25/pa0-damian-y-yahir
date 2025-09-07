@@ -1,5 +1,11 @@
 import pygame, sys, random
 
+#sound effects all from fnaf cuz I'm a nerd
+pygame.init()
+pygame.mixer.music.load("FNAF Doors Light Buzzing.mp3")
+pygame.mixer.music.play(-1)
+paddle_sound = pygame.mixer.Sound("FNAF Honk.wav")
+wall_sound = pygame.mixer.Sound("fnaf camera sound.wav")
 # This is to initialize a beginig  color first to
 # the ball can have a color in the first place
 # as it needs to be defined outside ball_movement
@@ -28,6 +34,9 @@ def ball_movement():
          #Pick a random color for the ball
         ball_color = random.choice([pygame.Color('red'), pygame.Color('green'), pygame.Color('blue'), \
                       pygame.Color('yellow'), pygame.Color('purple')])
+
+        #play the sounf effect
+        paddle_sound.play()
 
         # My way to check if ball hits the top of the paddle
         if ball_speed_y > 0 and ball.bottom <= player.top + 10:
@@ -66,12 +75,15 @@ def ball_movement():
             ball.bottom = player.top
             # TODO Task 6: Add sound effects HERE
 
+
     # Ball collision with top boundary
     if ball.top <= 0:
+        wall_sound.play()
         ball_speed_y *= -1  # Reverse ball's vertical direction
 
     # Ball collision with left and right boundaries
     if ball.left <= 0 or ball.right >= screen_width:
+        wall_sound.play()
         ball_speed_x *= -1
 
     # Ball goes below the bottom boundary (missed by player)
