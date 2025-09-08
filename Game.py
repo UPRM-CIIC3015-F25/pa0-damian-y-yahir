@@ -178,8 +178,8 @@ evil_ball = pygame.Rect(screen_width // 2 - 15, screen_height // 2 - 15, 30, 30)
 
 # Variables for the evil ball
 evil_ball_live = False
-evil_ball_speed_x = 5
-evil_ball_speed_y = 5
+evil_ball_speed_x = ball_speed_x // 3
+evil_ball_speed_y = ball_speed_y // 3
 
 start = False  # Indicates if the game has started
 
