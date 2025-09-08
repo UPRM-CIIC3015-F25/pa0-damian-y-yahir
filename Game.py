@@ -1,6 +1,6 @@
 import pygame, sys, random
 
-#sound effects all from fnaf cuz I'm a nerd
+# Sound effects all from fnaf cuz I'm a nerd
 pygame.init()
 pygame.mixer.music.load("FNAF Doors Light Buzzing.mp3")
 pygame.mixer.music.play(-1)
@@ -15,7 +15,8 @@ def ball_movement():
     """
     Handles the movement of the ball and collision detection with the player and screen boundaries.
     """
-    global ball_speed_x, ball_speed_y, score, start, ball_color, player_width, player
+    global ball_speed_x, ball_speed_y, score, start, ball_color, player_width, player, \
+        evil_ball, evil_ball_live, evil_ball_speed_x, evil_ball_speed_y
 
     # Move the ball
     ball.x += ball_speed_x
@@ -29,13 +30,13 @@ def ball_movement():
         ball_speed_y = speed * random.choice((1, -1))  # Randomize initial vertical direction
         start = False
 
-     #Ball collision with the player paddle
+     # Ball collision with the player paddle
     if ball.colliderect(player):
          #Pick a random color for the ball
         ball_color = random.choice([pygame.Color('red'), pygame.Color('green'), pygame.Color('blue'), \
                       pygame.Color('yellow'), pygame.Color('purple')])
 
-        #play the sounf effect
+        # Play the sounf effect
         paddle_sound.play()
 
         # My way to check if ball hits the top of the paddle
@@ -57,19 +58,42 @@ def ball_movement():
                 ball_speed_y += score * 0.25 * (-1)
                 ball_speed_x += score * 0.25 * (-1)
 
-            #set maximum speed to avoid tunneling and clipping
+            # Set maximum speed to avoid tunneling and clipping
             max_ballspeed_x = 9
             max_ballspeed_y = 9
             ball_speed_x = max(-max_ballspeed_x, min(ball_speed_x, max_ballspeed_x))
             ball_speed_y = max(-max_ballspeed_y, min(ball_speed_y, max_ballspeed_y))
 
-            #This is to decrease player width for difficulty
+            # This is to decrease player width for difficulty
             if player_width > ball.width:
                 player_width -= score
 
                 # Recreate player Rect with new width, centered at current x
                 player_center_x = player.centerx
                 player = pygame.Rect(player_center_x - player_width // 2, screen_height - 20, player_width, player_height)
+    # Add an evil ball and all if its logic, yes alot of it was just what the regular ball has
+    if score != 0 and score % 10 == 0 and evil_ball_live == False:
+        evil_ball_live = True
+        evil_ball.x = ball.x
+        evil_ball.y = ball.y
+        evil_ball_speed_x = ball_speed_x // 2
+        evil_ball_speed_y = ball_speed_y // 2
+
+    # Gives the evil ball movement
+    if evil_ball_live:
+        evil_ball.x += evil_ball_speed_x
+        evil_ball.y += evil_ball_speed_y
+
+        # Allows the evil ball to collide with the player
+        if evil_ball.left <= 0 or evil_ball.right >= screen_width:
+            evil_ball_speed_x *= -1
+        elif evil_ball.top <= 0 or evil_ball.bottom >= screen_height:
+            evil_ball_speed_y *= -1
+
+        # MAke the evil ball kill the player
+        if evil_ball.colliderect(player):
+            restart()
+            evil_ball_live = False
 
             # Reposition the ball above the paddle to prevent re-collision or tunneling
             ball.bottom = player.top
@@ -90,6 +114,9 @@ def ball_movement():
     if ball.bottom > screen_height:
         restart()  # Reset the game
 
+    if evil_ball.bottom > screen_height:
+        evil_ball_live = False
+
 def player_movement():
     """
     Handles the movement of the player paddle, keeping it within the screen boundaries.
@@ -106,10 +133,11 @@ def restart():
     """
     Resets the ball and player scores to the initial state.
     """
-    global ball_speed_x, ball_speed_y, score, player_width, player
+    global ball_speed_x, ball_speed_y, score, player_width, player, evil_ball_live
     ball.center = (screen_width // 2, screen_height // 2)  # Reset ball position to center
     ball_speed_y, ball_speed_x = 0, 0  # Stop ball movement
     score = 0  # Reset player score
+    evil_ball_live = False # Makes evil ball vanish in restart
 
     #Make player width reset upon restart
     player_width = 300
@@ -146,6 +174,12 @@ player_speed = 0
 # Score Text setup
 score = 0
 basic_font = pygame.font.Font('freesansbold.ttf', 32)  # Font for displaying score
+evil_ball = pygame.Rect(screen_width // 2 - 15, screen_height // 2 - 15, 30, 30)
+
+# Variables for the evil ball
+evil_ball_live = False
+evil_ball_speed_x = 5
+evil_ball_speed_y = 5
 
 start = False  # Indicates if the game has started
 
@@ -183,9 +217,26 @@ while True:
     # Visuals
     light_grey = pygame.Color('grey83')
     light_blue = pygame.Color('blue')
+    black = pygame.Color('black')
     red = pygame.Color('red')
+    white = pygame.Color('white')
+
     screen.fill(bg_color)  # Clear screen with background color
     pygame.draw.rect(screen, light_grey, player)  # Draw player paddle
+
+
+    # Show score only after game has started
+    if start:
+        player_text = basic_font.render(f'{score}', False, light_blue)
+        screen.blit(player_text, (screen_width / 2 - 15, 10))
+
+
+    # Give shape to the evil ball
+    if evil_ball_live: # Makes sure evil ball is drawn only when its live
+        pygame.draw.ellipse(screen, black, evil_ball) # Draws the evil ball
+
+
+
 
     # TODO Task 3: Change the Ball Color
     # I'm leaving this to tell myself this is done
